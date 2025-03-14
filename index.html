@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <title>U-Net Image2draw - Demo</title>
+  <style>
+    /* Reset */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: sans-serif;
+      background: #f9f9f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      color: #333;
+    }
+
+    .container {
+      background: #ffffff;
+      max-width: 500px;
+      width: 90%;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0px 2px 10px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .file-input-container {
+      border: 2px dashed #ccc;
+      border-radius: 6px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      margin-bottom: 20px;
+      transition: border-color 0.2s;
+    }
+    .file-input-container:hover {
+      border-color: #888;
+    }
+
+    #fileInput {
+      display: none; 
+    }
+    .file-input-text {
+      color: #777;
+    }
+
+    button {
+      background: #0066ff;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 10px 20px;
+      cursor: pointer;
+      margin: 0 auto;
+      display: block;
+      font-size: 1rem;
+    }
+    button:hover {
+      background: #0057d8;
+    }
+
+    .image-container {
+      margin-top: 20px;
+      text-align: center;
+    }
+    .image-container img {
+      max-width: 100%;
+      border-radius: 4px;
+    }
+
+    .spinner {
+      display: none;
+      margin: 10px auto;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #555;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    .error-message {
+      color: red;
+      text-align: center;
+      margin-top: 10px;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>U-Net Image2draw Demo</h1>
+
+  <div class="file-input-container" id="fileInputContainer">
+    <p class="file-input-text" id="fileInputText">Přetáhněte sem obrázek nebo klikněte pro výběr.</p>
+    <input type="file" id="fileInput" accept="image/*" />
+  </div>
+
+  <button id="sendButton">Převést obrázek</button>
+
+  <div class="spinner" id="spinner"></div>
+  <div class="error-message" id="errorMessage"></div>
+
+  <div class="image-container">
+    <img id="outputImage" alt="" />
+  </div>
+</div>
+
+<!-- Načteme @gradio/client z CDN jako ES modul -->
+<script type="module">
+  import { Client } from "https://cdn.jsdelivr.net/npm/@gradio/client/dist/index.js";
+
+  // 1) Vložte platný HF token (pokud je Space privátní)
+  const HF_TOKEN = "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";
+
+  let client = null;
+  try {
+    // 2) Připojíme se k Space podle URL subdomény
+    client = await Client.connect("https://cervenaraketa-image2draw-u-net.hf.space", {
+      hf_token: HF_TOKEN || null
+    });
+    console.log("Spojeno se Space!");
+  } catch (err) {
+    console.error("Chyba při connect:", err);
+  }
+
+  let selectedFile = null;
+
+  const fileInputContainer = document.getElementById("fileInputContainer");
+  const fileInput = document.getElementById("fileInput");
+  const fileInputText = document.getElementById("fileInputText");
+  const sendButton = document.getElementById("sendButton");
+  const spinner = document.getElementById("spinner");
+  const errorMessage = document.getElementById("errorMessage");
+  const outputImage = document.getElementById("outputImage");
+
+  // --- Drag & Drop ---
+  fileInputContainer.addEventListener("click", () => fileInput.click());
+  fileInputContainer.addEventListener("dragover", (evt) => {
+    evt.preventDefault();
+    fileInputContainer.style.borderColor = "#0066ff";
+  });
+  fileInputContainer.addEventListener("dragleave", () => {
+    fileInputContainer.style.borderColor = "#ccc";
+  });
+  fileInputContainer.addEventListener("drop", (evt) => {
+    evt.preventDefault();
+    fileInputContainer.style.borderColor = "#ccc";
+    if (evt.dataTransfer.files && evt.dataTransfer.files[0]) {
+      selectedFile = evt.dataTransfer.files[0];
+      fileInputText.textContent = "Soubor vybrán: " + selectedFile.name;
+    }
+  });
+
+  // --- FileInput dialog ---
+  fileInput.addEventListener("change", (evt) => {
+    if (evt.target.files && evt.target.files[0]) {
+      selectedFile = evt.target.files[0];
+      fileInputText.textContent = "Soubor vybrán: " + selectedFile.name;
+    }
+  });
+
+  // --- Klik na tlačítko ---
+  sendButton.addEventListener("click", async () => {
+    errorMessage.textContent = "";
+    outputImage.src = "";
+
+    if (!selectedFile) {
+      errorMessage.textContent = "Prosím, vyberte obrázek.";
+      return;
+    }
+    spinner.style.display = "block";
+
+    try {
+      if (!client) {
+        throw new Error("Klient @gradio/client není inicializován. Nelze volat .predict.");
+      }
+
+      // Zavoláme predikci => v pythonu: client.predict(input_image=..., api_name="/predict")
+      const result = await client.predict("/predict", { input_image: selectedFile });
+      console.log("Výsledek predikce:", result);
+
+      if (!result || !result.data || !result.data[0]) {
+        throw new Error("Výsledek neobsahuje očekávaná data. " + JSON.stringify(result));
+      }
+
+      let finalImageSrc = "";
+      const imageResult = result.data[0];
+
+      if (typeof imageResult === "string") {
+        // a) Když je rovnou base64 ("data:image/png;base64,...")
+        finalImageSrc = imageResult;
+      } else if (imageResult && typeof imageResult === "object") {
+        // b) Když je { data: "data:image/...", ... } - novější styl
+        if (imageResult.data) {
+          finalImageSrc = imageResult.data;
+        }
+        // c) Když vrací path/url, ale nepotvrdilo "is_file"
+        else if (imageResult.url) {
+          // Váš případ: { path: "...", url: "...", ... }
+          // => Lze dát přímo <img src="..."> 
+          finalImageSrc = imageResult.url;
+        }
+        // d) Když je "soubor" s is_file=true => voláme client.download
+        else if (imageResult.is_file && imageResult.path) {
+          const fileBlob = await client.download(imageResult);
+          finalImageSrc = URL.createObjectURL(fileBlob);
+        } else {
+          throw new Error("Nepodařilo se najít base64 nebo path v objektu: " + JSON.stringify(imageResult));
+        }
+      } else {
+        throw new Error("Nepodařilo se vyhodnotit výsledek: " + JSON.stringify(imageResult));
+      }
+
+      outputImage.src = finalImageSrc;
+
+    } catch (err) {
+      errorMessage.textContent = "Chyba: " + err.message;
+      console.error(err);
+      alert("Chyba při volání predikce:\n" + err.stack);
+    } finally {
+      spinner.style.display = "none";
+    }
+  });
+</script>
+</body>
+</html>
