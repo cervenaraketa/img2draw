@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="cs">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Scotpine | Shop</title>
+    <meta name="description" content="Kompletní nabídka originálních dřevěných výrobků Scotpine." />
+
+    <!-- Tailwind & FontAwesome -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "brcc-black": "#0a0a0a",
+              "brcc-brown": "#3a2e1e",
+              "brcc-tan": "#cc5252",
+              "brcc-red": "#8b0000",
+            },
+            fontFamily: {
+              title: ['"Bebas Neue"', "sans-serif"],
+              body: ['"Oswald"', "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- Packeta widget -->
+    <script src="https://widget.packeta.com/www/js/library.js"></script>
+    <script>
+    // definice poplatků, vložte **jen jednou**:
+    const SHIPPING_FEES = { zasilkovna:79, balikovna:79, posta:79 };
+    const PACKETA_EXTRA = { zbox:0, kuryr:30 };
+    const PAYMENT_FEES  = { dobirka:23, prevod:0, karta:0 };
+    </script>
+  
+<script>
+  const packetaApiKey  = '197fd6840f332ccf';
+  const packetaOptions = {
+    language: "cs",
+    view: "modal",
+    valueFormat: "FULL",       // <-- tady říkáme widgetu, aby vracel adresu
+    vendors: [
+      { country: "cz" },
+      { country: "cz", group: "zbox" }
+    ]
+  };
+
+    // kliknutí na křížek modal zavře
+btnClose.addEventListener("click", () => {
+  modal.classList.add("hidden");
+});
+
+  function showSelectedPickupPoint(point) {
+  const el = document.querySelector(".packeta-selector-value");
+  if (!point) {
+    el.innerHTML = "";
+    return;
+  }
+
+  const address =
+    point.routingName ||
+    point.name ||
+    `${point.street}, ${point.zip} ${point.city}`;
+
+  const photoUrl =
+    Array.isArray(point.photos) && point.photos.length
+      ? point.photos[0].normal    // větší rozlišení
+      : null;
+
+  if (photoUrl) {
+    el.innerHTML = `
+      <div class="flex items-center space-x-3">
+        <img id="packetaThumb"
+             src="${point.photos[0].thumbnail}"
+             alt="Foto výdejního místa"
+             class="w-16 h-16 object-cover rounded-md border border-white cursor-pointer" />
+        <span>Vybráno: ${address}</span>
+      </div>
+    `;
+    // po vložení elementu přidej událost:
+    const thumb = document.getElementById("packetaThumb");
+    thumb.addEventListener("click", () => {
+      const modal = document.getElementById("packetaModal");
+      const modalImg = document.getElementById("packetaModalImg");
+      modalImg.src = photoUrl;
+      modal.classList.remove("hidden");
+    });
+  } else {
+    el.innerText = `Vybráno: ${address}`;
+  }
+}
+
+// kliknutí kamkoli na pozadí modalu ho zavře
+document.getElementById("packetaModal")
+  .addEventListener("click", () => {
+    document.getElementById("packetaModal").classList.add("hidden");
+  });
+
+
+
+
+
+
+  // jednou stačí
+  document.getElementById("packetaMethod").addEventListener("change", e => {
+    const wiz = document.getElementById("packetaWidget");
+    wiz.classList.toggle("hidden", e.target.value !== "zbox");
+  });
+</script>
+
+
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@300;400;500;600;700&display=swap");
+      body {
+        font-family: "Oswald", sans-serif;
+      }
+      .title-font {
+        font-family: "Bebas Neue", sans-serif;
+      }
+      /* --- nav underline hover like index.html --- */
+      .nav-link {
+        position: relative;
+      }
+      .nav-link::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 0;
+        height: 2px;
+        background: #cc5252; /* brcc‑tan */
+        transition: width 0.3s ease;
+      }
+      .nav-link:hover::after {
+        width: 100%;
+      }
+      /* --- mobile panel animation --- */
+      .mobile-menu {
+        transition: all 0.3s ease;
+        max-height: 0;
+        overflow: hidden;
+      }
+      .mobile-menu.open {
+        max-height: 500px;
+      }
+      /* --- product hover overlay (for future) --- */
+      .product-card:hover .product-overlay {
+        opacity: 1;
+      }
+      /* --- filter accordion icon rotation --- */
+      .rotate-90 {
+        transform: rotate(90deg);
+      }
+      /* --- mobile filter button --- */
+      .mobile-filter-btn {
+        display: block;
+        margin: 1rem auto;
+        padding: 0.5rem 1rem;
+        background-color: #3a2e1e;
+        border-radius: 0.25rem;
+      }
+      @media (min-width: 1024px) {
+        .mobile-filter-btn {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body class="bg-brcc-black text-white">
+    <!-- ========  NAVIGATION  ========= -->
+    <nav
+      class="bg-brcc-black bg-opacity-90 fixed w-full z-40 border-b border-white border-opacity-20"
+    >
+    <div class="w-full px-6 md:px-6 py-3 flex justify-between items-center">
+
+        <!-- logo -->
+        <a href="index.html" class="flex items-center">
+          <img src="img/logo.png" alt="Scotpine logo" class="h-10 mr-2" />
+        </a>
+
+        <!-- desktop links -->
+        <div class="hidden md:flex items-center space-x-8">
+          <a href="index.html#home" class="nav-link hover:text-brcc-tan">DOMŮ</a>
+          <a href="index.html#about" class="nav-link hover:text-brcc-tan">PŘÍBĚH</a>
+          <a href="index.html#products" class="nav-link hover:text-brcc-tan">PRODUKTY</a>
+          <a href="index.html#community" class="nav-link hover:text-brcc-tan">TECHNOLOGIE</a>
+          <a href="index.html#contact" class="nav-link hover:text-brcc-tan">KONTAKT</a>
+          <a href="shop.html" class="bg-brcc-red hover:bg-red-800 px-4 py-2 rounded-md font-bold">SHOP</a>
+          </span>  
+        </div>
+
+
+        <!-- cart & cta -->
+         <!-- Košík -->
+         <div class="hidden md:flex items-center space-x-4">
+            <a href="kos.html" class="hover:text-brcc-tan relative">
+              <i class="fas fa-shopping-cart text-2xl"></i>
+              <span id="cartCount" class="absolute -top-2 -right-2 bg-yellow-400 text-black rounded-full text-xs px-2">0</span>
+            </a>
+          </div>
+
+          
+  
+
+
+  <!-- mobilní košík -->
+  <a href="kos.html" class="block md:hidden relative mr-4">
+    <i class="fas fa-shopping-cart text-xl text-white"></i>
+    <span id="cartCountMobile" class="absolute -top-2 -right-2 bg-yellow-400 text-black rounded-full text-xs px-2">0</span>
+  </a>
+
+  <!-- burger -->
+  <button id="mobileBtn" class="md:hidden text-2xl focus:outline-none">
+    <i class="fas fa-bars"></i>
+  </button>
+</div>
+
+
+  
+
+<!-- mobile panel -->
+<div id="mobilePanel" class="mobile-menu md:hidden">
+    <div class="px-2 pt-2 pb-4 space-y-2">
+  
+      <!-- Ostatní odkazy -->
+      <a href="index.html#home" class="block px-3 py-2 hover:bg-brcc-brown">DOMŮ</a>
+      <a href="index.html#about" class="block px-3 py-2 hover:bg-brcc-brown">PŘÍBĚH</a>
+      <a href="index.html#products" class="block px-3 py-2 hover:bg-brcc-brown">PRODUKTY</a>
+      <a href="index.html#community" class="block px-3 py-2 hover:bg-brcc-brown">TECHNOLOGIE</a>
+      <a href="index.html#contact" class="block px-3 py-2 hover:bg-brcc-brown">KONTAKT</a>
+  
+
+  
+      <!-- SHOP button -->
+      <div class="pt-2">
+        <a href="shop.html" class="block w-full bg-brcc-red hover:bg-red-800 px-4 py-2 rounded-md text-center font-bold">SHOP</a>     
+      </div>
+    </div>
+  </div>
+  
+    </nav>
+
+
+
+    <!-- ========  INFO BAR  ========= -->
+    <div
+      class="fixed top-[64px] w-full bg-brcc-brown text-center py-1 px-4 text-sm md:text-base shadow z-30"
+    >
+      Veškeré prodeje momentálně probíhají prostřednictvím
+      <a
+        href="https://www.fler.cz"
+        target="_blank"
+        class="underline font-semibold text-red-500 hover:text-brcc-tan"
+        >fler.cz</a
+      >
+    </div>
+
+    <!-- Hero Section -->
+    <section id="home" class="relative h-[50vh] flex items-center justify-center overflow-hidden">
+      <!-- Obrázek jako pozadí -->
+      <img src="img/shop.jpg" alt="Hero Image" class="absolute inset-0 w-full h-full object-cover z-0" />
+
+      <!-- Obsah -->
+      <div class="container mx-auto px-4 z-20 text-center">
+        <h1 class="title-font text-5xl md:text-7xl text-brcc-tan mb-3"></h1>
+        <h2 class="title-font text-3xl md:text-5xl text-white mb-6"></h2>
+        <p class="text-lg md:text-xl mb-8 max-w-2xl mx-auto"></p>
+      </div>
+    </section>
+
+    <main class="pt-40 pb-24 container mx-auto px-4">
+        <h1 class="title-font text-4xl text-brcc-tan mb-8">Košík</h1>
+        <div id="cartItems" class="space-y-6">
+          <!-- Položky z localStorage se sem dynamicky načtou -->
+        </div>
+        <hr class="border-t border-white my-8" />
+        <div id="checkoutSection" class="mt-8 flex flex-col lg:flex-row justify-between gap-12">
+
+
+
+  <!-- === doprava + Packeta === -->
+  <div class="flex-1 space-y-8">
+    <!-- Způsob dopravy -->
+    <div>
+      <label for="shippingMethod" class="block mb-2 font-semibold text-brcc-tan text-lg">
+        Způsob dopravy:
+      </label>
+      <select id="shippingMethod" onchange="handleShippingChange()"
+        class="w-full p-2 rounded bg-brcc-black text-white border border-white">
+        <option value="zero">-Vyberte dopravce-</option>
+        <option value="zasilkovna">Zásilkovna</option>
+        <option value="balikovna">Balíkovna</option>
+        <option value="posta">Česká pošta</option>
+      </select>
+    </div>
+
+    <!-- Volba u Zásilkovny -->
+    <div id="packetaChoice" class="hidden mt-4">
+      <label for="packetaMethod" class="block mb-2 font-semibold text-brcc-tan text-lg">
+        Vyberte typ výdeje:
+      </label>
+      <select id="packetaMethod"
+        class="w-full p-2 rounded bg-brcc-black text-white border border-white">
+        <option value="zero">-Vyberte možnost-</option>
+        <option value="zbox">Z-BOX</option>
+        <option value="kuryr">Doručení na adresu</option>
+      </select>
+
+      <!-- widget pro Z-BOX -->
+      <div id="packetaWidget" class="hidden mt-3">
+        <button
+          class="bg-brcc-tan text-black px-4 py-2 rounded hover:bg-brcc-red"
+          onclick="Packeta.Widget.pick(packetaApiKey, showSelectedPickupPoint, packetaOptions)">
+          Vyber výdejní místo Z-BOX
+        </button>
+        <div class="packeta-selector-value mt-2 text-sm"></div>
+      </div>
+    </div>
+
+<!-- Lightbox-modal pro zvětšení fotky -->
+<div id="packetaModal"
+     class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+  <!-- Close button -->
+  <button id="packetaModalClose"
+          class="absolute top-4 right-4 text-white text-3xl p-2 hover:text-brcc-tan focus:outline-none">
+    <i class="fas fa-times"></i>
+  </button>
+  <img id="packetaModalImg"
+       src=""
+       alt="Zvětšená fotka"
+       class="w-full h-auto max-w-lg sm:max-w-3xl max-h-full rounded-lg shadow-lg" />
+</div>
+
+
+    <hr class="border-t border-white" />
+
+            <!-- Doprava + Platba -->
+            <div class="flex-1 space-y-8">
+              <!-- Doprava -->
+
+
+      
+          
+    <!-- Platba -->
+    <div>
+      <label for="paymentMethod" class="block mb-2 font-semibold text-brcc-tan text-lg">
+        Způsob platby:
+      </label>
+      <select id="paymentMethod" class="w-full p-2 rounded bg-brcc-black text-white border border-white">
+        <option value="zero">-Vyberte platební metodu-</option>
+        <option value="dobirka">Platba dobírkou</option>
+        <option value="prevod">Platba předem na účet</option>
+        <option value="karta">Platba kartou</option>
+      </select>
+    </div>
+  </div>
+          
+            <!-- Fakturační formulář -->
+            <div class="flex-1">
+              <h2 class="text-xl font-semibold text-brcc-tan mb-4">Fakturační a dodací údaje</h2>
+              <form id="billingForm" class="space-y-4">
+                <input id="billingName"    name="Jméno a příjmení"    type="text"    placeholder="Jméno a příjmení" class="w-full p-2 rounded bg-brcc-black text-white border border-white" />
+                <input id="billingStreet"  name="Ulice a číslo popisné"  type="text"    placeholder="Ulice a číslo popisné" class="w-full p-2 rounded bg-brcc-black text-white border border-white" />
+                <input id="billingCity"    name="Město"    type="text"    placeholder="Město" class="w-full p-2 rounded bg-brcc-black text-white border border-white" />
+                <input id="billingZip"     name="PSČ"     type="text"    placeholder="PSČ" class="w-full p-2 rounded bg-brcc-black text-white border border-white" />
+                <input id="billingEmail"   name="E-mail"   type="email"   placeholder="E-mail" class="w-full p-2 rounded bg-brcc-black text-white border border-white" />
+                <input id="billingPhone"   name="Telefon"   type="tel"     placeholder="Telefon" class="w-full p-2 rounded bg-brcc-black text-white border border-white" />
+              </form>
+              
+            </div>
+          
+          </div>
+
+
+          
+          
+          
+      </main>
+
+    <!-- ========  MAIN CONTENT  ========= -->
+    <main class="pt-40 pb-24 container mx-auto px-4">
+      <!-- ===== PAGE HEADER (full width) ===== -->
+
+      </header>
+
+
+
+
+            </div>
+          </div>
+        </aside>
+
+                    <!-- tlačítko Dokončit objednávku -->
+  <div class="mt-8 text-center w-full">
+    <button id="finishOrder"
+            class="bg-brcc-tan text-black px-6 py-3 rounded-lg font-bold hover:bg-brcc-red">
+      Pokračovat
+    </button>
+  </div>
+
+  <!-- Rekapitulace objednávky -->
+<div id="orderSummaryModal"
+class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+<div class="bg-white rounded-lg overflow-auto max-w-lg w-full max-h-full p-6 relative">
+<button id="closeSummary"
+       class="absolute top-3 right-3 text-black text-2xl focus:outline-none">&times;</button>
+<h2 class="text-xl font-bold mb-4 text-gray-800">Rekapitulace objednávky</h2>
+<div id="orderSummaryContent" class="space-y-2 text-gray-700"></div>
+<div class="mt-6 text-right">
+ <button id="confirmOrder"
+         class="bg-brcc-tan text-black px-5 py-2 rounded hover:bg-brcc-red">
+   Potvrdit objednávku
+ </button>
+</div>
+</div>
+</div>
+
+
+
+
+
+    <!-- Footer -->
+    <footer class="bg-brcc-black border-t border-brcc-brown py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <h4 class="title-font text-xl text-brcc-tan mb-4">SHOP</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="hover:text-brcc-tan">Dřevěné výrobky</a></li>
+                   
+                        <li><a href="#" class="hover:text-brcc-tan">Oblečení</a></li>
+                        <li><a href="#" class="hover:text-brcc-tan">Dárkové poůkazy</a></li>
+                       
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="title-font text-xl text-brcc-tan mb-4">O NÁS</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="hover:text-brcc-tan">Náš příběh</a></li>
+                        <li><a href="#" class="hover:text-brcc-tan">Naše mise</a></li>
+                     
+                        <li><a href="#" class="hover:text-brcc-tan">Charita</a></li>
+                        <li><a href="#" class="hover:text-brcc-tan">Kariéra</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="title-font text-xl text-brcc-tan mb-4">PODPORA</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="hover:text-brcc-tan">Kontakt</a></li>
+                        <li><a href="#" class="hover:text-brcc-tan">FAQs</a></li>
+                        <li><a href="#" class="hover:text-brcc-tan">Odeslání zboží</a></li>
+                        <li><a href="#" class="hover:text-brcc-tan">Reklamace</a></li>
+                       
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="title-font text-xl text-brcc-tan mb-4">Zůstaňte v obraze</h4>
+                    <p class="mb-4">Přihlaste se k odběru našeho newsletteru a získejte exkluzivní nabídky a aktualizace.</p>
+                    <div class="flex">
+                        <input type="email" placeholder="Email" class="bg-brcc-brown px-4 py-2 rounded-l-md focus:outline-none w-full">
+                        <button class="bg-brcc-red hover:bg-red-800 px-4 py-2 rounded-r-md"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </div>
+            <!-- bottom bar -->
+            <div class="border-t border-brcc-brown pt-8 flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <img src="img/logo.png" alt="BRCC Logo" class="h-10">
+                </div>
+                
+                <div class="text-center md:text-right">
+                    <p class="text-sm mb-2">&copy; 2025 Scotpine. All Rights Reserved.</p>
+                    <div class="flex justify-center md:justify-end space-x-4 text-sm">
+                        <a href="#" class="hover:text-brcc-tan">Privacy Policy</a>
+                        <a href="#" class="hover:text-brcc-tan">Terms of Service</a>
+                        <a href="#" class="hover:text-brcc-tan">Accessibility</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Nastav počet položek v košíku po načtení stránky
+        const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
+        document.getElementById("cartCount").textContent = storedCart.length;
+const cartMobile = document.getElementById("cartCountMobile");
+if (cartMobile) {
+  cartMobile.textContent = storedCart.length;
+}
+      </script>
+
+      
+
+      
+
+<script>
+
+  // po změně druhu výdeje
+document.getElementById("packetaMethod")
+  .addEventListener("change", e => {
+    document.getElementById("packetaWidget")
+      .classList.toggle("hidden", e.target.value !== "zbox");
+  });
+    function handleShippingChange() {
+      const shipping = document.getElementById("shippingMethod").value;
+      const packeta = document.getElementById("packetaChoice");
+      if (shipping === "zasilkovna") {
+        packeta.classList.remove("hidden");
+      } else {
+        packeta.classList.add("hidden");
+        // případně reset výběru:
+        document.getElementById("packetaMethod").value = "zero";
+
+        
+      }
+    }
+  </script>
+
+<script>
+  // reset Z-BOXu, pokud uživatel změní dopravce
+  function handleShippingChange() {
+    const shipping     = document.getElementById("shippingMethod").value;
+    const packetaChoice = document.getElementById("packetaChoice");
+    const packetaMethod = document.getElementById("packetaMethod");
+    const selectorValue = document.querySelector(".packeta-selector-value");
+
+    if (shipping === "zasilkovna") {
+      packetaChoice.classList.remove("hidden");
+    } else {
+      packetaChoice.classList.add("hidden");
+      packetaMethod.value = "zero";
+      selectorValue.innerHTML = "";
+    }
+  }
+
+  // když uživatel změní dopravce, vždy přepočítat
+document.getElementById("shippingMethod")
+        .addEventListener("change", () => {
+          handleShippingChange();
+          loadCart();
+        });
+
+// když uživatel změní typ výdeje u Zásilkovny, přepočítat
+document.getElementById("packetaMethod")
+        .addEventListener("change", () => {
+          // váš kód pro přepínání widgetu…
+          loadCart();
+        });
+
+// když uživatel změní způsob platby, přepočítat
+document.getElementById("paymentMethod")
+        .addEventListener("change", () => loadCart());
+
+  document.getElementById("shippingMethod")
+    .addEventListener("change", handleShippingChange);
+
+  // při přepnutí Z-BOX ↔ Kurýr vždy vymaž předchozí výběr
+  document.getElementById("packetaMethod")
+    .addEventListener("change", e => {
+      const wiz           = document.getElementById("packetaWidget");
+      const selectorValue = document.querySelector(".packeta-selector-value");
+      selectorValue.innerHTML = "";
+      wiz.classList.toggle("hidden", e.target.value !== "zbox");
+    });
+</script>
+
+      
+
+      <script>
+        function loadCart() {
+          let cart = JSON.parse(localStorage.getItem("cart")) || [];
+          const cartItems = document.getElementById("cartItems");
+          const cartTotal = document.getElementById("cartTotal");
+          cartItems.innerHTML = "";
+      
+          let total = 0;
+      
+          // Hlavička tabulky
+          const header = document.createElement("div");
+header.className = "grid grid-cols-4 gap-4 font-bold border-b border-white pb-2 mb-4";
+header.innerHTML = `
+  <div class="col-span-2">Název</div>
+  <div>Množství</div>
+
+  <div>Cena s DPH</div>
+`;
+cartItems.appendChild(header);
+
+      
+cart.forEach((item,index) => {
+  const quantity    = item.quantity || 1;
+  const priceWithVAT= item.price;
+  const unitWithoutVAT = Math.round(priceWithVAT/1.21);
+  const totalVAT    = (priceWithVAT - unitWithoutVAT) * quantity;
+  const totalPrice  = priceWithVAT * quantity;  
+
+  const div = document.createElement("div");
+  div.className = "grid grid-cols-3 gap-4 items-center mb-2";
+   div.innerHTML = `
+   <div class="col-span-2">
+     <a href="shop.html?produkt=${item.id}" class="text-brcc-tan hover:underline">
+       ${item.name}
+     </a>
+   </div>
+   <div>
+     <input type="number" … value="${quantity}" … />
+   </div>
+   <div class="flex items-center">
+     <span>${totalPrice} Kč</span>
+     <button onclick="removeFromCart(${index})" class="ml-4 text-red-500 hover:text-red-700">
+       <i class="fas fa-trash"></i>
+     </button>
+   </div>
+ `;
+
+  cartItems.appendChild(div);
+});
+
+
+      
+          cartTotal.textContent = `${total} Kč`;
+          document.getElementById("cartCount").textContent = cart.length;
+        }
+      
+        
+        function updateQuantity(index, newQty) {
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    cart[index].quantity = parseInt(newQty);
+    localStorage.setItem("cart", JSON.stringify(cart));
+    loadCart();
+  }
+
+  function removeFromCart(index) {
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    cart.splice(index, 1);
+    localStorage.setItem("cart", JSON.stringify(cart));
+    loadCart();
+  }
+  </script>
+
+  <script>
+function loadCart() {
+  const cart        = JSON.parse(localStorage.getItem("cart")) || [];
+  const cartItems   = document.getElementById("cartItems");
+  const checkout    = document.getElementById("checkoutSection");
+  const finishBtn   = document.getElementById("finishOrder");
+  const cartCount   = document.getElementById("cartCount");
+  const mobileCount = document.getElementById("cartCountMobile");
+
+  // reset
+  cartItems.innerHTML = "";
+
+  if (cart.length === 0) {
+    // prázdný košík: schovej checkout i tlačítko
+    checkout.style.display  = "none";
+    finishBtn.style.display = "none";
+
+    cartItems.innerHTML = `
+      <div class="text-center text-xl py-20 col-span-3">Košík je prázdný.</div>
+    `;
+
+    // aktualizuj ikonky
+    cartCount.textContent   = "0";
+    if (mobileCount) mobileCount.textContent = "0";
+    return;
+  }
+
+  // v košíku něco je: ukaž checkout i tlačítko
+  checkout.style.display  = "flex";
+  finishBtn.style.display = "inline-block";
+
+  // Záhlaví tabulky
+  const header = document.createElement("div");
+  header.className =
+    "grid grid-cols-3 gap-4 font-bold border-b border-white pb-2 mb-4 " +
+    "md:grid-cols-[2fr_auto_auto]";
+  header.innerHTML = `
+    <div>Název</div>
+    <div>Množství</div>
+    <div class="text-right">Cena s DPH</div>
+  `;
+  cartItems.appendChild(header);
+
+  // Řádky položek
+  cart.forEach((item, index) => {
+    const qty         = item.quantity || 1;
+    const priceWithVAT = item.price * qty;
+    const row = document.createElement("div");
+    row.className =
+      "grid grid-cols-3 gap-4 items-center mb-2 " +
+      "md:grid-cols-[2fr_auto_auto]";
+    row.innerHTML = `
+      <div>
+        <a href="shop.html?produkt=${item.id}" class="text-brcc-tan hover:underline">
+          ${item.name}
+        </a>
+      </div>
+      <div>
+        <input
+          type="number" min="1" max="10" value="${qty}"
+          onchange="updateQuantity(${index}, this.value)"
+          class="w-16 px-2 py-1 rounded bg-brcc-black text-white border border-white"
+        />
+      </div>
+      <div class="flex items-center justify-end space-x-2">
+        <span>${priceWithVAT.toLocaleString()} Kč</span>
+        <button onclick="removeFromCart(${index})" class="text-red-500 hover:text-red-700">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
+    `;
+    cartItems.appendChild(row);
+  });
+
+  // Shrnutí poplatků
+  const shipping     = document.getElementById("shippingMethod").value;
+  const packetaType  = document.getElementById("packetaMethod").value;
+  const payment      = document.getElementById("paymentMethod").value;
+
+  const totalWithVAT = cart.reduce((sum, it) => sum + it.price * (it.quantity || 1), 0);
+  const shippingFee  = SHIPPING_FEES[shipping] || 0;
+  const packetaFee   = shipping === "zasilkovna" ? (PACKETA_EXTRA[packetaType] || 0) : 0;
+  const paymentFee   = PAYMENT_FEES[payment] || 0;
+  const grandTotal   = totalWithVAT + shippingFee + packetaFee + paymentFee;
+
+  const summary = document.createElement("div");
+  summary.className = "mt-6 text-right space-y-1 text-lg";
+  summary.innerHTML = `
+    <div><strong>Mezisoučet:</strong> ${totalWithVAT.toLocaleString()} Kč</div>
+    <div><strong>Poštovné:</strong> ${shippingFee.toLocaleString()} Kč</div>
+    ${shipping === "zasilkovna"
+      ? `<div><strong>${packetaType === "kuryr" ? "Příplatek za doručení" : "Výdejní místo Z-BOX"}:</strong> ${packetaFee.toLocaleString()} Kč</div>`
+      : ""}
+    <div><strong>Poplatek za ${payment === "dobirka" ? "dobírku" : "platbu"}:</strong> ${paymentFee.toLocaleString()} Kč</div>
+    <hr class="border-t border-white my-2" />
+    <div class="text-2xl"><strong>Celkem:</strong> ${grandTotal.toLocaleString()} Kč</div>
+  `;
+  cartItems.appendChild(summary);
+
+  // aktualizuj ikonky košíku
+  cartCount.textContent   = cart.length;
+  if (mobileCount) mobileCount.textContent = cart.length;
+}
+
+// zbytek utilit
+function updateQuantity(i, v) {
+  const cart = JSON.parse(localStorage.getItem("cart")) || [];
+  cart[i].quantity = parseInt(v);
+  localStorage.setItem("cart", JSON.stringify(cart));
+  loadCart();
+}
+
+function removeFromCart(i) {
+  const cart = JSON.parse(localStorage.getItem("cart")) || [];
+  cart.splice(i, 1);
+  localStorage.setItem("cart", JSON.stringify(cart));
+  loadCart();
+}
+
+window.addEventListener("DOMContentLoaded", loadCart);
+</script>
+
+
+
+      
+      
+      
+    </body>
+  </html>
+    <script>
+      function openProductModal(id) {
+        document.getElementById(`productModal-${id}`).classList.remove("hidden");
+      }
+    
+      function closeProductModal() {
+  document.querySelectorAll('[id^="productModal-"]').forEach(modal => {
+    modal.classList.add("hidden");
+
+    // Reset hlavního obrázku na první miniaturu
+    const mainImg = modal.querySelector("#modalMainImage");
+    const defaultThumb = modal.querySelector(".modal-thumb");
+
+    if (defaultThumb && mainImg) {
+      mainImg.src = defaultThumb.src;
+
+      modal.querySelectorAll(".modal-thumb").forEach(thumb => {
+        thumb.classList.remove("border-brcc-tan");
+        thumb.classList.add("border-transparent");
+      });
+
+      defaultThumb.classList.add("border-brcc-tan");
+      defaultThumb.classList.remove("border-transparent");
+    }
+  });
+}
+
+function setModalImage(imgElement) {
+  // Najde modal, ve kterém je kliknutá miniatura
+  const modal = imgElement.closest('[id^="productModal-"]');
+  const main = modal.querySelector("#modalMainImage");
+
+  // Nastaví novou src
+  main.src = imgElement.src;
+
+  // Odstraní border ze všech miniatur v tomto modalu
+  modal.querySelectorAll(".modal-thumb").forEach(thumb => {
+    thumb.classList.remove("border-brcc-tan");
+    thumb.classList.add("border-transparent");
+  });
+
+  // Přidá border aktivní miniatuře
+  imgElement.classList.add("border-brcc-tan");
+  imgElement.classList.remove("border-transparent");
+}
+
+
+
+    
+      // zavírání ESC
+      document.addEventListener("keydown", function(e) {
+        if (e.key === "Escape") closeProductModal();
+      });
+    </script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const finishBtn  = document.getElementById("finishOrder");
+    const modal      = document.getElementById("orderSummaryModal");
+    const closeBtn   = document.getElementById("closeSummary");
+    const confirmBtn = document.getElementById("confirmOrder");
+    const content    = document.getElementById("orderSummaryContent");
+  
+    finishBtn.addEventListener("click", () => {
+      const cart = JSON.parse(localStorage.getItem("cart")) || [];
+  
+      // 1) Spočítáme ceny
+      let subtotal = 0;
+      cart.forEach(({ price, quantity = 1 }) => subtotal += price * quantity);
+      const shipping     = document.getElementById("shippingMethod").value;
+      const packetaType  = document.getElementById("packetaMethod").value;
+      const payment      = document.getElementById("paymentMethod").value;
+      const place        = document.querySelector(".packeta-selector-value").innerText || "-";
+  
+      const shippingFee  = SHIPPING_FEES[shipping] || 0;
+      const packetaFee   = shipping === "zasilkovna" ? (PACKETA_EXTRA[packetaType] || 0) : 0;
+      const paymentFee   = PAYMENT_FEES[payment] || 0;
+      const grandTotal   = subtotal + shippingFee + packetaFee + paymentFee;
+  
+      // 2) Fakturační + dodací údaje
+      const formData = new FormData(document.getElementById("billingForm"));
+      const billingHtml = Array.from(formData.entries())
+        .map(([k,v]) => `<div class="flex justify-between"><span>${k}:</span><span class="font-medium">${v}</span></div>`)
+        .join("");
+  
+      // 3) Vygenerujeme hezkou rekapitulaci
+      content.innerHTML = `
+        <div class="space-y-6 text-gray-800">
+  
+          <div>
+            <h3 class="text-lg font-semibold border-b border-gray-300 pb-1 mb-2">Položky</h3>
+            <ul class="divide-y divide-gray-200">
+              ${cart.map(({ name, price, quantity = 1 }) => `
+                <li class="py-2 flex justify-between">
+                  <span>${name} × ${quantity}</span>
+                  <span>${(price*quantity).toLocaleString()} Kč</span>
+                </li>
+              `).join("")}
+            </ul>
+          </div>
+  
+          <div>
+            <h3 class="text-lg font-semibold border-b border-gray-300 pb-1 mb-2">Poplatky</h3>
+            <div class="space-y-1">
+              <div class="flex justify-between"><span>Mezisoučet:</span><span class="font-medium">${subtotal.toLocaleString()} Kč</span></div>
+              <div class="flex justify-between"><span>Poštovné:</span><span class="font-medium">${shippingFee.toLocaleString()} Kč</span></div>
+              ${shipping === "zasilkovna" ? `
+                <div class="flex justify-between">
+                  <span>${packetaType === "kuryr" ? "Příplatek za doručení" : "Výdejní místo Z-BOX"}:</span>
+                  <span class="font-medium">${packetaFee.toLocaleString()} Kč</span>
+                </div>
+                <div class="flex justify-between">
+                  <span>Vybrané místo:</span>
+                  <span class="font-medium">${place}</span>
+                </div>
+              ` : ""}
+              <div class="flex justify-between"><span>Poplatek za ${payment === "dobirka" ? "dobírku" : "platbu"}:</span><span class="font-medium">${paymentFee.toLocaleString()} Kč</span></div>
+            </div>
+          </div>
+  
+          <div class="text-right">
+            <div class="text-2xl font-bold">Celkem: ${grandTotal.toLocaleString()} Kč</div>
+          </div>
+  
+          <div>
+            <h3 class="text-lg font-semibold border-b border-gray-300 pb-1 mb-2">Způsoby</h3>
+            <div class="grid grid-cols-2 gap-4">
+              <div class="flex justify-between"><span>Doprava:</span><span class="font-medium">${shipping}</span></div>
+              ${shipping === "zasilkovna" ? `<div class="flex justify-between"><span>Typ výdeje:</span><span class="font-medium">${packetaType}</span></div>` : ""}
+              <div class="flex justify-between"><span>Platba:</span><span class="font-medium">${payment}</span></div>
+            </div>
+          </div>
+  
+          <div>
+            <h3 class="text-lg font-semibold border-b border-gray-300 pb-1 mb-2">Fakturační a dodací údaje</h3>
+            <div class="space-y-2">${billingHtml}</div>
+          </div>
+  
+        </div>
+      `;
+  
+      modal.classList.remove("hidden");
+    });
+  
+    closeBtn.addEventListener("click", () => modal.classList.add("hidden"));
+    modal.addEventListener("click", e => { if (e.target === modal) modal.classList.add("hidden"); });
+    confirmBtn.addEventListener("click", () => {
+      alert("Děkujeme za vaši objednávku");
+      modal.classList.add("hidden");
+    });
+  });
+  </script>
+  
+
+
+<!-- Skript pro rekapitulaci a dokončení objednávky -->
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const finishBtn   = document.getElementById("finishOrder");
+    const modal       = document.getElementById("orderSummaryModal");
+    const closeBtn    = document.getElementById("closeSummary");
+    const confirmBtn  = document.getElementById("confirmOrder");
+    const content     = document.getElementById("orderSummaryContent");
+
+    finishBtn.addEventListener("click", () => {
+      // Načteme položky z košíku
+      const cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+      // Způsob dopravy a volby u Zásilkovny
+      const shipping     = document.getElementById("shippingMethod").value;
+      const packetaType  = document.getElementById("packetaMethod").value;
+      const packetaPlace = document.querySelector(".packeta-selector-value").innerText || "-";
+      const payment      = document.getElementById("paymentMethod").value;
+
+      // Fakturační údaje přes FormData
+      const formData = new FormData(document.getElementById("billingForm"));
+      const billing  = Array.from(formData.entries())
+                             .map(([k,v]) => `<strong>${k}:</strong> ${v}`)
+                             .join("<br>");
+
+                             let html = "<strong>Položky košíku:</strong><ul class='list-disc ml-5'>";
+  let total = 0;
+  cart.forEach(item => {
+    const qty  = item.quantity || 1;
+    const sum  = item.price * qty;
+    total += sum;
+    html += `<li>${item.name} × ${qty} — ${sum.toLocaleString()} Kč</li>`;
+  });
+  html += "</ul>";
+  // po položkách:
+html += `<br><strong>Mezisoučet:</strong> ${total.toLocaleString()} Kč`;
+
+// pak poplatky:
+html += `<br><strong>Poštovné:</strong> ${shippingFee.toLocaleString()} Kč`;
+if(shipping==="zasilkovna"){
+  html += `<br><strong>${packetaType==="kuryr"?"Příplatek za doručení":"Výdejní místo Z-BOX"}:</strong> ${packetaFee.toLocaleString()} Kč`;
+}
+html += `<br><strong>Poplatek za ${payment==="dobirka"?"dobírku":"platbu"}:</strong> ${paymentFee.toLocaleString()} Kč`;
+
+// a nakonec:
+html += `<br><hr><br><strong>Celkem:</strong> ${grandTotal.toLocaleString()} Kč`;
+
+  // příplatky jako ve funkci loadCart
+  const shippingFee = SHIPPING_FEES[shipping] || 0;
+  const packetaFee  = (shipping==="zasilkovna" ? (PACKETA_EXTRA[packetaType]||0) : 0);
+  const paymentFee  = PAYMENT_FEES[payment] || 0;
+  const grandTotal  = total + shippingFee + packetaFee + paymentFee;
+
+  html += `<br><strong>Poštovné:</strong> ${shippingFee.toLocaleString()} Kč`;
+  if (shipping==="zasilkovna") {
+    html += `<br><strong>${packetaType==="kuryr"?"Příplatek za doručení na adresu":"Výdejní místo Z-BOX"}:</strong> ${packetaFee.toLocaleString()} Kč`;
+  }
+  html += `<br><strong>Poplatek za ${payment==="dobirka"?"dobírku":"platbu"}:</strong> ${paymentFee.toLocaleString()} Kč`;
+  html += `<br><hr><br><strong>Celkem:</strong> ${grandTotal.toLocaleString()} Kč`;
+
+  html += `<br><br><strong>Způsob dopravy:</strong> ${shipping}`;
+  if (shipping==="zasilkovna") {
+    html += `<br><strong>Typ výdeje:</strong> ${packetaType}`;
+    html += `<br><strong>Výdejní místo:</strong> ${packetaPlace}`;
+  }
+  html += `<br><strong>Způsob platby:</strong> ${payment}`;
+  html += `<br><br><strong>Fakturační a dodací údaje:</strong><br>${billing}`;
+
+
+
+
+      content.innerHTML = html;
+      modal.classList.remove("hidden");
+    });
+
+    // Zavírání modalu
+    closeBtn.addEventListener("click", () => {
+      modal.classList.add("hidden");
+    });
+    modal.addEventListener("click", e => {
+      if (e.target === modal) modal.classList.add("hidden");
+    });
+
+    // Potvrzení objednávky
+    confirmBtn.addEventListener("click", () => {
+      alert("Děkujeme za vaši objednávku");
+      modal.classList.add("hidden");
+      // TODO: sem přijde odeslání na server apod.
+    });
+  });
+</script>
+
+
+  
+
+    <!-- ========  JS  ========= -->
+    <script>
+      /* -------------------- BURGER MENU -------------------- */
+      const mobileBtn = document.getElementById("mobileBtn");
+      const mobilePanel = document.getElementById("mobilePanel");
+      mobileBtn.addEventListener("click", () => mobilePanel.classList.toggle("open"));
+
+
+
+
+      /* -------------------- FILTER ACCORDION -------------------- */
+      const filterToggle = document.getElementById("filterToggle");
+      const filterBody = document.getElementById("filterBody");
+      const filterIcon = document.getElementById("filterIcon");
+      filterToggle.addEventListener("click", () => {
+        filterBody.classList.toggle("hidden");
+        filterIcon.classList.toggle("rotate-90");
+      });
+
+      /* -------------------- MOBILE FILTER TOGGLE -------------------- */
+      const mobileFilterBtn = document.getElementById("mobileFilterBtn");
+      const mobileFilterPanel = document.getElementById("mobileFilterPanel");
+      mobileFilterBtn.addEventListener("click", () => {
+        mobileFilterPanel.classList.toggle("open");
+      });
+
+      /* -------------------- PRODUCT FILTERING -------------------- */
+      const checkboxes = document.querySelectorAll(".product-filter");
+      const productCards = document.querySelectorAll(".product-card");
+
+      function applyFilters() {
+        const activeFilters = Array.from(checkboxes)
+          .filter((c) => c.checked)
+          .map((c) => c.value);
+
+        productCards.forEach((card) => {
+          const matchesFilter =
+            activeFilters.length === 0 || activeFilters.includes(card.dataset.type);
+          if (matchesFilter) {
+            // neodkrývej karty, které ještě čekají na lazy‑load
+            if (!card.classList.contains("lazy-hidden")) card.classList.remove("hidden");
+          } else {
+            card.classList.add("hidden");
+          }
+        });
+      }
+
+      checkboxes.forEach((cb) => cb.addEventListener("change", applyFilters));
+
+      /* -------------------- LAZY LOADING (8 + 4) -------------------- */
+      const INITIAL_COUNT = 8;
+      const BATCH_SIZE = 4;
+      let nextIndex = INITIAL_COUNT;
+
+      function setupLazy() {
+        productCards.forEach((card, idx) => {
+          if (idx >= INITIAL_COUNT) {
+            card.classList.add("hidden", "lazy-hidden");
+          }
+        });
+      }
+
+
+
+      /* Načti další várku, pokud uživatel dostane scroll na 300 px k dolnímu okraji. */
+      function onScroll() {
+        if (window.innerHeight + window.scrollY >= document.body.scrollHeight - 300) {
+          revealNextBatch();
+        }
+      }
+
+      setupLazy();
+      window.addEventListener("scroll", onScroll);
+    </script>
+  </body>
+</html>
