@@ -1,0 +1,22 @@
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://libya-embassy.cz/sitemap.xml
+
+# Prevent crawling of backup files and documentation
+Disallow: /*.md$
+Disallow: /COMPONENT-SYSTEM-REPORT.md
+Disallow: /README.md
+Disallow: /EMBASSY-PHOTO-GUIDE.md
+Disallow: /SLIDESHOW-README.md
+Disallow: /SITEMAP.md
+
+# Allow important assets
+Allow: /assets/
+Allow: /components/
+Allow: /*.css
+Allow: /*.js
+
+# Crawl delay (optional)
+Crawl-delay: 1

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zprávy - Velvyslanectví Libyjského státu v České republice</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header and Navigation - Loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="main news-main">
+
+        <!-- Breadcrumbs -->
+        <nav class="breadcrumbs">
+            <div class="container">
+                <ul class="breadcrumb-list">
+                    <li class="breadcrumb-item">
+                        <a href="index.html">
+                            <i class="fas fa-home"></i>
+                            <span>Domů</span>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-separator">/</li>
+                    <li class="breadcrumb-item active">
+                        <i class="fas fa-newspaper"></i>
+                        <span>Zprávy</span>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main News Layout -->
+        <section class="section news-layout">
+            <div class="container">
+                <div class="news-grid-layout">
+                    <!-- Main Featured Article -->
+                    <article class="main-featured">
+                        <a href="#" onclick="openNewsDetail(); return false;" style="text-decoration: none; color: inherit;">
+                            <div class="article-image">
+                                <img src="assets/images/007.jpg" alt="Hlavní zpráva" class="news-img">
+                                <div class="image-overlay">
+                                    <span class="article-badge urgent">DŮLEŽITÉ</span>
+                                </div>
+                            </div>
+                            <div class="article-content">
+                                <div class="article-meta">
+                                    <time class="meta-time">23. října 2025, 14:30</time>
+                                    <span class="meta-author">Tisková zpráva</span>
+                                </div>
+                                <h1 class="article-title">Historické setkání: Libye a ČR posílí energetickou spolupráci</h1>
+                                <p class="article-lead">Ahmed M. Al-Sharif podepsal s českými představiteli memorandum o porozumění v oblasti energetiky. Dohoda otevírá cestu k investicím v hodnotě více než 2 miliard korun.</p>
+                                <div class="article-stats">
+                                    <span><i class="fas fa-share"></i> Sdílet</span>
+                                </div>
+                            </div>
+                        </a>
+                    </article>
+
+                    <!-- Side Articles -->
+                    <aside class="side-articles">
+                        <div class="trending-header">
+                            <h2><i class="fas fa-fire"></i> Nejčtenější</h2>
+                        </div>
+                        
+                        <article class="side-article">
+                            <div class="side-image">
+                                <img src="assets/images/008.jpg" alt="Konzulární služby" class="side-img">
+                                <span class="article-number">1</span>
+                            </div>
+                            <div class="side-content">
+                                <h3>Nové vízové postupy od listopadu - co se změní?</h3>
+                                <div class="side-meta">
+                                    <time>22. října 15:20</time>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="side-article">
+                            <div class="side-image">
+                                <img src="assets/images/009.jpg" alt="Kulturní akce" class="side-img">
+                                <span class="article-number">2</span>
+                            </div>
+                            <div class="side-content">
+                                <h3>Libyjští umělci představí svá díla v Praze</h3>
+                                <div class="side-meta">
+                                    <time>21. října 11:45</time>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="side-article">
+                            <div class="side-image">
+                                <img src="assets/images/010.jpg" alt="Obchodní mise" class="side-img">
+                                <span class="article-number">3</span>
+                            </div>
+                            <div class="side-content">
+                                <h3>České firmy míří do Tripolisu - velká obchodní mise</h3>
+                                <div class="side-meta">
+                                    <time>20. října 09:30</time>
+                                </div>
+                            </div>
+                        </article>
+                    </aside>
+                </div>
+            </div>
+        </section>
+
+        <!-- More News Section -->
+        <section class="section">
+            <div class="container">
+                <h2 class="section-title">Další zprávy</h2>
+                <div class="news-grid">
+                    <!-- News will be loaded dynamically by JavaScript -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer - Loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <script src="components/component-loader.js"></script>
+    <script src="translations.js"></script>
+    <script src="website-images.js"></script>
+    <script src="script.js"></script>
+    <script src="assets/js/news-loader.js"></script>
+</body>
+</html>
+

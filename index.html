@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Velvyslanectví Libyjského státu v České republice</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header and Navigation - Loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="main">
+        <!-- Hero Section with Slideshow -->
+        <section id="home" class="hero">
+            <div class="hero-slideshow">
+                <!-- Slides container - filled by JavaScript -->
+                <div class="slides-container" id="slidesContainer">
+                    <!-- Slides will be generated here -->
+                </div>
+                
+                <!-- Navigation arrows -->
+                <button class="slide-nav slide-prev" id="slidePrev" data-translate="slide_prev" aria-label="Předchozí slide">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="slide-nav slide-next" id="slideNext" data-translate="slide_next" aria-label="Další slide">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+                
+                <!-- Slide indicators -->
+                <div class="slide-indicators" id="slideIndicators">
+                    <!-- Indicators will be generated here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Access Section -->
+        <section id="quick-access" class="section quick-access-section">
+            <div class="container">
+              
+                <div class="quick-access-grid">
+                    <a href="visa.html" class="quick-access-card">
+                        <div class="quick-access-icon">
+                            <i class="fas fa-passport"></i>
+                        </div>
+                        <h3 data-translate="qa_visa">Mám zájem o vízum</h3>
+                        <p data-translate="qa_visa_desc">Informace o vízových požadavcích a postupech</p>
+                    </a>
+                    
+                    <a href="services.html" class="quick-access-card">
+                        <div class="quick-access-icon">
+                            <i class="fas fa-user-friends"></i>
+                        </div>
+                        <h3 data-translate="qa_services">Mám zájem o služby libyjským občanům</h3>
+                        <p data-translate="qa_services_desc">Konzulární služby pro občany Libye</p>
+                    </a>
+                    
+                    <a href="education.html" class="quick-access-card">
+                        <div class="quick-access-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <h3 data-translate="qa_education">Mám zájem o studium v Libyi</h3>
+                        <p data-translate="qa_education_desc">Vzdělávací programy a stipendia</p>
+                    </a>
+                    
+                    <a href="contact.html" class="quick-access-card">
+                        <div class="quick-access-icon">
+                            <i class="fas fa-briefcase"></i>
+                        </div>
+                        <h3 data-translate="qa_work">Mám zájem o práci na velvyslanectví</h3>
+                        <p data-translate="qa_work_desc">Kariérní příležitosti a pozice</p>
+                    </a>
+                    
+                    <a href="visa.html" class="quick-access-card">
+                        <div class="quick-access-icon">
+                            <i class="fas fa-plane"></i>
+                        </div>
+                        <h3 data-translate="qa_visit">Mám zájem navštívit Libyi</h3>
+                        <p data-translate="qa_visit_desc">Turistické informace a cestovní rady</p>
+                    </a>
+                    
+                    <a href="embassy.html" class="quick-access-card">
+                        <div class="quick-access-icon">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <h3 data-translate="qa_embassy">Velvyslanectví</h3>
+                        <p data-translate="qa_embassy_desc">Informace o budově a službách</p>
+                    </a>
+                    
+                    <a href="services.html" class="quick-access-card">
+                        <div class="quick-access-icon">
+                            <i class="fas fa-stamp"></i>
+                        </div>
+                        <h3 data-translate="qa_documents">Potřebuji ověřit - legalizovat oficiální dokument</h3>
+                        <p data-translate="qa_documents_desc">Legalizace a ověřování oficiálních dokumentů</p>
+                    </a>
+                    
+                    <a href="services.html" class="quick-access-card">
+                        <div class="quick-access-icon">
+                            <i class="fas fa-id-card"></i>
+                        </div>
+                        <h3 data-translate="qa_passport">Potřebuji obnovit - vydat libyjský pas</h3>
+                        <p data-translate="qa_passport_desc">Vydávání a obnova libyjských pasů pro občany</p>
+                    </a>
+                    
+                    <a href="contact.html" class="quick-access-card emergency-card">
+                        <div class="quick-access-icon">
+                            <i class="fas fa-moon"></i>
+                        </div>
+                        <h3 data-translate="qa_emergency">Jsem v nouzi, potřebuji pomoci</h3>
+                        <p data-translate="qa_emergency_desc">Konzulární pomoc a asistence v nouzových situacích pro občany Libye</p>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- News Section -->
+        <section id="news" class="section">
+            <div class="container">
+                <h2 class="section-title" data-translate="news_section_title">Aktuality</h2>
+                <div class="news-grid">
+                    <!-- News will be loaded dynamically by JavaScript -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer - Loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Core scripts -->
+    <script src="translations.js"></script>
+    <script src="hero-slides.js"></script>
+    <script src="website-images.js"></script>
+    
+    <!-- Component system -->
+    <script src="components/component-loader.js"></script>
+    
+    <!-- Main functionality -->
+    <script src="script.js"></script>
+    
+    <!-- Page-specific scripts -->
+    <script src="assets/js/news-loader.js"></script>
+</body>
+</html>
